@@ -1,0 +1,25 @@
+.DS_Store
+.idea
+*.log
+tmp/
+.cache/
+
+# Autotools files & directories.
+
+build-aux/
+m4/
+aclocal.m4
+autom4te.cache/
+config*
+!configure.ac
+Makefile*
+!Makefile.am
+libtool
+libjournalpp.la
+.deps
+.libs
+.dirstamp
+*.o
+*.lo
+test/*
+!test/*.cpp
