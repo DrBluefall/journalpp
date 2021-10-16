@@ -44,7 +44,7 @@ void journalpp::journal::marshal_field(std::ostringstream& input, std::string na
 
         std::uint64_t size;
         unsigned char i;
-        for (size = static_cast<std::uint64_t>(value.length()), i=0; i < 8 ; size >>= 8, ++i) {
+        for (size = static_cast<std::uint64_t>(value.length()), i = 0; i < 8; size >>= 8, ++i) {
             input.put(size & 0xFF);
         }
 
@@ -52,7 +52,7 @@ void journalpp::journal::marshal_field(std::ostringstream& input, std::string na
 
     } else {
         // No newline, just write this to the stream.
-        input << name << '=' << value << '\n';
+        input << '=' << value << '\n';
     }
 }
 
