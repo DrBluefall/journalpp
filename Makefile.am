@@ -8,6 +8,12 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 build-aux/compile \
 
 ACLOCAL_AMFLAGS = -I m4
 
+if DEBUG_INFO
+	DEBUGFLAGS = -g3 -O0
+endif
+
+AM_CXXFLAGS = $(DEBUGFLAGS)
+
 #====================#
 # LIBRARY DEFINITION #
 #====================#
