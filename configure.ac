@@ -8,6 +8,23 @@ AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects silent-rules foreign])
 AM_PROG_AR
 LT_INIT
 
+dnl Add copyright notice.
+AC_COPYRIGHT([
+Copyright (C) 2021 Alexander Bisono.
+
+libjournalpp is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+libjournalpp is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with libjournalpp. If not, see <https://www.gnu.org/licenses/>.
+])
+
 dnl Ask if we're doing a debug build.
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug],

@@ -1,3 +1,20 @@
+# Copyright (C) 2021 Alexander Bisono.
+#
+# This file is part of libjournalpp.
+#
+# libjournalpp is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# libjournalpp is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with libjournalpp. If not, see <https://www.gnu.org/licenses/>.
+
+
 # Partially lifted from https://www.eyrie.org/~eagle/notes/style/build.html
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 build-aux/compile \
 	build-aux/config.guess build-aux/config.sub build-aux/depcomp \
