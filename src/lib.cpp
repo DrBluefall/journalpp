@@ -1,15 +1,14 @@
 #include <algorithm>
 #include <cerrno>
-#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <journalpp/journalpp.h>
 #include <ostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sys/socket.h>
-#include <sys/un.h>
 #include <unistd.h>
+#include <variant>
 /*
  * Copyright (C) 2021 Alexander Bisono.
  *
@@ -40,8 +39,37 @@ journalpp::journal::journal() {
     }
 }
 
+void journalpp::journal::log(const std::map<std::string, LogValue>& kv) {
+
+    std::ostringstream record;
+
+    for (const auto& [field, value] : kv) {
+        if (std::holds_alternative<std::string>(value)) {
+
+            // Append as normal.
+            marshal_field(record, field, std::get<std::string>(value));
+
+        } else if (std::holds_alternative<journalpp::Priority>(value)) {
+
+            // static_cast + to_string, then format as normal.
+            marshal_field(record, field,
+                std::to_string(static_cast<int>(std::get<journalpp::Priority>(value))));
+        } else if (std::holds_alternative<journalpp::Facility>(value)) {
+
+            // static_cast + to_string, then format as normal.
+            marshal_field(record, field,
+                std::to_string(static_cast<int>(std::get<journalpp::Facility>(value))));
+        }
+    }
+
+    // Finally, append the whole thing to the journal.
+    write_to_socket(record.str());
+}
+
 void journalpp::journal::write_to_socket(std::string msg) {
 
+    // TODO: Implement sending a `memfd` file descriptor if/when `sendto`
+    // returns EMSGSIZE
     if (sendto(mjournal_fd,
             msg.c_str(),
             msg.size(),

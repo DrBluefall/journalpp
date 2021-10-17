@@ -47,7 +47,7 @@ libjournalpp_la_CXXFLAGS = -I $(srcdir)/include -std=c++17
 
 TESTS = $(check_PROGRAMS)
 
-check_PROGRAMS = test/sanity test/marshalling_fields
+check_PROGRAMS = test/sanity test/marshalling_fields test/high_level_log
 
 test_sanity_SOURCES = test/sanity.cpp
 test_sanity_CXXFLAGS = -I $(srcdir)/include
@@ -56,3 +56,7 @@ test_sanity_LDADD = libjournalpp.la
 test_marshalling_fields_SOURCES = test/marshalling_fields.cpp
 test_marshalling_fields_CXXFLAGS = -I $(srcdir)/include
 test_marshalling_fields_LDADD = libjournalpp.la
+
+test_high_level_log_SOURCES = test/high_level_log.cpp
+test_high_level_log_CXXFLAGS = -I $(srcdir)/include
+test_high_level_log_LDADD = libjournalpp.la
