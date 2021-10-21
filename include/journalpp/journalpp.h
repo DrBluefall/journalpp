@@ -110,6 +110,9 @@ namespace journalpp {
         journal(const journal&&) = delete;
 
         void log(const std::map<std::string, LogValue>& kv);
+        void log(const std::string& msg);
+        void log(const Priority priority, const std::string& msg);
+        void log(const Priority priority, const Facility facility, const std::string& msg);
         void wrapup();
         void write_to_socket(std::string msg);
         void marshal_field(std::ostringstream& input, std::string name, std::string value);

@@ -66,6 +66,20 @@ void journalpp::journal::log(const std::map<std::string, LogValue>& kv) {
     write_to_socket(record.str());
 }
 
+void journalpp::journal::log(const std::string& msg) {
+    log({ { "MESSAGE", msg }, { "PRIORITY", DEFAULT_PRIORITY }, { "SYSLOG_FACILITY", DEFAULT_FACILITY } });
+}
+
+void journalpp::journal::log(const journalpp::Priority priority, const std::string& msg) {
+    log({ { "MESSAGE", msg }, { "PRIORITY", priority }, { "SYSLOG_FACILITY", DEFAULT_FACILITY } });
+}
+
+void journalpp::journal::log(const journalpp::Priority priority,
+                             const journalpp::Facility facility,
+                             const std::string& msg) {
+    log({ { "MESSAGE", msg }, { "PRIORITY", priority }, { "SYSLOG_FACILITY", facility } });
+}
+
 void journalpp::journal::write_to_socket(std::string msg) {
 
     // TODO: Implement sending a `memfd` file descriptor if/when `sendto`
