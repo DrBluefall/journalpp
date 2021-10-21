@@ -56,9 +56,9 @@ void journalpp::journal::log(const std::map<std::string, LogValue>& kv) {
                 std::to_string(static_cast<int>(std::get<journalpp::Priority>(value))));
         } else if (std::holds_alternative<journalpp::Facility>(value)) {
 
-            // static_cast + to_string, then format as normal.
+            // static_cast, bitshift, to_string, then format as normal.
             marshal_field(record, field,
-                std::to_string(static_cast<int>(std::get<journalpp::Facility>(value))));
+                std::to_string(static_cast<int>(std::get<journalpp::Facility>(value)) >> 3));
         }
     }
 

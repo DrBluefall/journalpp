@@ -58,28 +58,41 @@ namespace journalpp {
     // facility values as they're defined in 'sys/syslog.h'. Probably because
     // the values are bitshifted under the hood. So the macros have to be
     // manually expanded and stripped of the bitshift.
+    /*
+     * Journal facility.
+     *
+     * When excluded from a call to journal::log, the default will be
+     * Facility::User, as documented in syslog(3), unless defined otherwise by
+     * JOURNALPP_DEFAULT_FACILITY.
+     */
     enum class Facility {
-        Auth = 4,
-        AuthPrivate = 10,
-        Cron = 9,
-        Daemon = 3,
-        FTP = 11,
-        Kernel = 0,
-        Local0 = 16,
-        Local1 = 17,
-        Local2 = 18,
-        Local3 = 19,
-        Local4 = 20,
-        Local5 = 21,
-        Local6 = 22,
-        Local7 = 23,
-        LinePrinter = 6,
-        Mail = 2,
-        News = 7,
-        Syslog = 5,
-        User = 1,
-        UUCP = 8,
+        Auth = LOG_AUTH,
+        AuthPrivate = LOG_AUTHPRIV,
+        Cron = LOG_CRON,
+        Daemon = LOG_DAEMON,
+        FTP = LOG_FTP,
+        Kernel = LOG_KERN,
+        Local0 = LOG_LOCAL0,
+        Local1 = LOG_LOCAL1,
+        Local2 = LOG_LOCAL2,
+        Local3 = LOG_LOCAL3,
+        Local4 = LOG_LOCAL4,
+        Local5 = LOG_LOCAL5,
+        Local6 = LOG_LOCAL6,
+        Local7 = LOG_LOCAL7,
+        LinePrinter = LOG_LPR,
+        Mail = LOG_MAIL,
+        News = LOG_NEWS,
+        Syslog = LOG_SYSLOG,
+        User = LOG_USER,
+        UUCP = LOG_UUCP,
     };
+
+#ifndef JOURNALPP_DEFAULT_FACILITY
+    constexpr Facility DEFAULT_FACILITY = Facility::User;
+#else
+    constexpr Facility DEFAULT_FACILITY = JOURNALPP_DEFAULT_FACILITY;
+#endif
 
     using LogValue = std::variant<std::string, Priority, Facility>;
 
