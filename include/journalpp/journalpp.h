@@ -30,6 +30,12 @@
 namespace journalpp {
     int foo();
 
+    /*
+     * Journal priority.
+     *
+     * When excluded from a call to journal::log, it'll default to
+     * Priority::Info unless JOURNALPP_DEFAULT_PRIORITY is set differently.
+     */
     enum class Priority {
         Emergency = LOG_EMERG,
         Alert     = LOG_ALERT,
@@ -40,6 +46,13 @@ namespace journalpp {
         Info      = LOG_INFO,
         Debug     = LOG_DEBUG,
     };
+
+#ifndef JOURNALPP_DEFAULT_PRIORITY
+    constexpr Priority DEFAULT_PRIORITY = Priority::Info;
+#else
+    constexpr Priority DEFAULT_PRIORITY = JOURNALPP_DEFAULT_PRIORITY;
+#endif
+
 
     // NOTE: for some godforsaken reason, journald doesn't recognize the syslog
     // facility values as they're defined in 'sys/syslog.h'. Probably because
