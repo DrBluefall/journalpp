@@ -41,6 +41,9 @@ pkginclude_HEADERS = $(srcdir)/include/journalpp/journalpp.h
 libjournalpp_la_SOURCES = src/lib.cpp $(pkginclude_HEADERS)
 libjournalpp_la_CXXFLAGS = -I $(srcdir)/include -std=c++17
 
+info_TEXINFOS = doc/journalpp.texi
+doc_journalpp_index_TEXINFOS = doc/fdl.texi
+
 #=========================#
 # AUTOMAKE TEST FRAMEWORK #
 #=========================#

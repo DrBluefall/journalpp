@@ -1,0 +1,205 @@
+\input texinfo
+@c %**start-of-header
+@settitle libjournal++ Reference Manual
+@syncodeindex tp fn
+@syncodeindex tp vr
+@documentencoding UTF-8
+@c %**end-of-header
+@include version.texi
+@copying
+This manual is for libjournal++ (ver. @value{VERSION}, updated @value{UPDATED}).
+
+Copyright @copyright{} 2021 Alexander Bisono.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''.
+@end quotation
+@end copying
+
+@dircategory Software libraries
+@direntry
+* libjournal++: (libjournal++) Logging to systemd-journald via the Native Journal Protocol.
+@end direntry
+
+@titlepage
+@title libjournal++ Reference Manual
+@subtitle ver. @value{VERSION}, @value{UPDATED}
+@author Alex Bluefall
+@page
+@vskip 0pt plus 1fill
+@insertcopying
+@end titlepage
+
+@contents
+
+@node Top
+@top libjournal++
+
+This is the manual for libjournal++ v@value{VERSION}, a C++ library
+for logging to @code{systemd-journald} via the Native Journal
+Protocol.
+
+@insertcopying
+
+@menu
+* Basic Usage :: How to write to the journal.
+* Priorities & Facilities :: Categorizing records.
+* GNU Free Documentation License :: Manual license.
+* Index :: Manual Index.
+@end menu
+
+@node Basic Usage
+@chapter Basic Usage
+@cindex usage, basic
+@findex journalpp::journal::log
+@tindex journalpp::journal
+
+The main way of interacting with the library is via @code{journalpp::journal}, a wrapper class around the system journal socket, @code{/run/systemd/journal/socket}. Logging is mainly done using one of the four overloads of @code{journalpp::journal::log}:
+
+@table @code
+
+@item journalpp::journal::log(const std::string&)
+The most basic variant. Logs a @code{MESSAGE} to the journal using the default priority and facility.
+
+@item journalpp::journal::log(const journalpp::Priority, const std::string&)
+Adds an argument to customize the @code{PRIORITY} field.
+
+@item journalpp::journal::log(const journalpp::Priority, const journalpp::Facility, const std::string&)
+Adds an argument to customize the @code{SYSLOG_FACILITY} field.
+
+@item journalpp::journal::log(const std::map<std::string, LogValue>&)
+Allows for full customization of the fields sent to the journal, including those mentioned previously. All previous overloads are convenience wrappers around this one.
+
+@end table
+
+For most purposes, using the first overload will likely get what you want across, as in this example:
+
+@example Cplusplus
+
+journalpp::journal j;
+
+j.log(@quotedblleft{}Hello, systemd!@quotedblright{});
+
+@end example
+
+With no other configuration, this will log the message @samp{Hello, systemd!} to the journal, with @code{Priority::Info} and @code{Facility::User} used as defaults.
+
+@node Priorities & Facilities
+@chapter Priorities & Facilities
+
+As mentioned previously, @code{journalpp::journal::log} has several overloads that allow you to specify the priority (via @code{journalpp::Priority}) and facility (via @code{journalpp::Facility}) of the logged info. The values for each enum correspond to the value for their respective enum defined in @code{sys/syslog.h}@footnote{This technically isn't true for @code{journalpp::Facility}, as the @emph{actual} values are left-shifted by 3. However, journald doesn't recognize the shifted values as syslog facilities, so the shift has to be stripped out.}.
+
+@menu
+* Message Priority :: How important a record is.
+* Message Facility :: What a record is related to.
+* Configuring Defaults :: Set the default facility and priority used by the library.
+@end menu
+
+@node Message Priority
+@section Message Priority
+@cindex priority
+@tindex journalpp::Priority
+
+@table @code
+
+@item Priority::Emergency
+System is unusable. @strong{NOTE}: Applications should not normally use this. It is included for the sake of completeness.
+
+@item Priority::Alert
+Immediate action required. e.g. Database corruption.
+
+@item Priority::Critical
+Critical error conditions.
+
+@item Priority::Error
+Error conditions.
+
+@item Priority::Warn
+Warning messages.
+
+@item Priority::Notice
+Normal, but significant, conditions.
+
+@item Priority::Info
+Informational messages.
+
+@item Priority::Debug
+Tracing & debugging info.
+
+@end table
+
+@node Message Facility
+@section Message Facility
+@cindex facility
+@tindex journalpp::Facility
+
+@table @code
+
+@item Facility::Auth
+Security & authorization messages.
+
+@item Facility::AuthPrivate
+Private security & authorization messages.
+
+@item Facility::Cron
+Clock daemon.
+
+@item Facility::Daemon
+General daemon facility, used with system daemons that have no facility of their own.
+
+@item Facility::FTP
+FTP daemon.
+
+@item Facility::Kernel
+Kernel messages. @strong{NOTE}: This cannot be used by user processes. It is here for the sake of completeness.
+
+@item Facility::LPR
+Line printer subsystem@footnote{Does anyone still even use these? -Dr. Bluefall}.
+
+@item Facility::Mail
+Mail subsystem.
+
+@item Facility::News
+USENET news subsystem.
+
+@item Facility::Syslog
+Messages generated internally by @code{syslogd(8)}.
+
+@item Facility::User
+Generic user-level messages. (Default.)
+
+@item Facility::UUCP
+UUCP subsystem@footnote{Okay, I am @emph{convinced} no one uses this. So why is it here? See the reason why @code{Facility::Kernel} exists. -Dr. Bluefall}.
+
+@item Facility::Local@{0,7@}
+Locally-defined facilities.
+
+@end table
+
+@node Configuring Defaults
+@section Configuring Defaults
+@cindex defaults
+@vindex JOURNALPP_DEFAULT_FACILITY
+@vindex JOURNALPP_DEFAULT_PRIORITY
+
+Setting the default facility and priority used by the library is as simple as defining two values: @code{JOURNALPP_DEFAULT_FACILITY} and @code{JOURNALPP_DEFAULT_PRIORITY}. For instance, if you wanted to, by default, log to @code{Facility::Local5} with @code{Priority::Debug}, you could do the following:
+
+@example Cplusplus
+
+#define JOURNALPP_DEFAULT_FACILITY journalpp::Facility::Local5
+#define JOURNALPP_DEFAULT_PRIORITY journalpp::Priority::Debug
+#include <journalpp/journalpp.h>
+
+@end example
+
+Doing so would make every call to @code{journalpp::journal::log(message)} equal to @code{journalpp::journal::log(message, Priority::Debug, Facility::Local5)}.
+
+@node GNU Free Documentation License
+@chapter GNU Free Documentation License
+@include fdl.texi
+
+@node Index
+@unnumbered Index
+@printindex vr
+
+@bye

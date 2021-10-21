@@ -23,3 +23,6 @@ libjournalpp.la
 *.lo
 test/*
 !test/*.cpp
+doc/*
+!doc/*.texi
+doc/version.texi
