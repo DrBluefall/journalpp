@@ -7,6 +7,8 @@
 #include <sys/un.h>
 #include <string>
 #include <map>
+#include <initializer_list>
+#include <utility>
 #include <syslog.h>
 #include <variant>
 /*
@@ -104,8 +106,10 @@ namespace journalpp {
             "/run/systemd/journal/socket", // sun_path
         };
 
+        std::map<std::string, LogValue> mlog_context;
+
       public:
-        journal();
+        journal(std::initializer_list<std::pair<const std::string, LogValue>> ctx = {});
         journal(const journal&) = delete;
         journal(const journal&&) = delete;
 

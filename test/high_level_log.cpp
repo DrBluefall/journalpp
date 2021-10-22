@@ -1,22 +1,22 @@
 #include <journalpp/journalpp.h>
 
 int main() {
-    journalpp::journal j;
+    journalpp::journal j({{"JOURNALPP_TEST", "test/high_level_log"}});
 
     j.log({
-        { "MESSAGE", "test/high_level_log.cpp 1" },
+        { "MESSAGE", "message 1" },
         { "PRIORITY", journalpp::Priority::Debug },
         { "SYSLOG_FACILITY", journalpp::Facility::Local7 },
     });
 
     j.log({
-        { "MESSAGE", "test/high_level_log.cpp 2" },
+        { "MESSAGE", "message 2" },
         { "PRIORITY", journalpp::Priority::Notice },
         { "SYSLOG_FACILITY", journalpp::Facility::Local6 },
     });
 
     j.log({
-        { "MESSAGE", "test/high_level_log.cpp 3" },
+        { "MESSAGE", "message 3" },
         { "PRIORITY", journalpp::Priority::Error },
         { "SYSLOG_FACILITY", journalpp::Facility::Local5 },
     });

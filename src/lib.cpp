@@ -31,7 +31,9 @@ int journalpp::foo() {
     return 1;
 }
 
-journalpp::journal::journal() {
+journalpp::journal::journal(std::initializer_list<std::pair<const std::string, LogValue>> ctx)
+    : mlog_context(ctx) {
+
     mjournal_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
 
     if (mjournal_fd == -1) {
@@ -43,7 +45,10 @@ void journalpp::journal::log(const std::map<std::string, LogValue>& kv) {
 
     std::ostringstream record;
 
-    for (const auto& [field, value] : kv) {
+    auto record_map = mlog_context;
+    record_map.insert(kv.begin(), kv.end());
+
+    for (const auto& [field, value] : record_map) {
         if (std::holds_alternative<std::string>(value)) {
 
             // Append as normal.
@@ -75,8 +80,8 @@ void journalpp::journal::log(const journalpp::Priority priority, const std::stri
 }
 
 void journalpp::journal::log(const journalpp::Priority priority,
-                             const journalpp::Facility facility,
-                             const std::string& msg) {
+    const journalpp::Facility facility,
+    const std::string& msg) {
     log({ { "MESSAGE", msg }, { "PRIORITY", priority }, { "SYSLOG_FACILITY", facility } });
 }
 
