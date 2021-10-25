@@ -1,7 +1,7 @@
 
 dnl Initialize autoconf, automake, and libtool.
 AC_PREREQ([2.71])
-AC_INIT([libjournalpp], [0.0])
+AC_INIT([libjournalpp], [1.0])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects silent-rules foreign])
