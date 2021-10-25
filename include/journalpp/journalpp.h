@@ -110,6 +110,7 @@ namespace journalpp {
 
       public:
         journal(std::initializer_list<std::pair<const std::string, LogValue>> ctx = {});
+        journal(const journal&, std::initializer_list<std::pair<const std::string, LogValue>> ctx = {});
         journal(const journal&) = delete;
         journal(const journal&&) = delete;
 

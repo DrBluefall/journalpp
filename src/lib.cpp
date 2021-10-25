@@ -2,6 +2,7 @@
 #include <cerrno>
 #include <cstdint>
 #include <cstring>
+#include <initializer_list>
 #include <journalpp/journalpp.h>
 #include <ostream>
 #include <sstream>
@@ -39,6 +40,13 @@ journalpp::journal::journal(std::initializer_list<std::pair<const std::string, L
     if (mjournal_fd == -1) {
         throw std::runtime_error(std::strerror(errno));
     }
+}
+
+// Create a subjournal that inherits the toplevel journal's fd.
+journalpp::journal::journal(const journal& other, std::initializer_list<std::pair<const std::string, LogValue>> ctx)
+    : mlog_context(ctx)
+    , mjournal_fd(other.mjournal_fd) {
+    mlog_context.insert(other.mlog_context.begin(), other.mlog_context.end());
 }
 
 void journalpp::journal::log(const std::map<std::string, LogValue>& kv) {
